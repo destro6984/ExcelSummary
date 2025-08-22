@@ -1,0 +1,12 @@
+services:
+ web:
+   build: .
+   container_name: django-docker
+   ports:
+     - "8000:8000"
+   volumes:
+     - ./:/app
+   environment:
+      SQLITE_PATH: /app/db.sqlite3
+   env_file:
+     - .env
