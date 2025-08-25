@@ -11,7 +11,7 @@ TEST_RESPONSES = Path(__file__).parent / "test_files"
 
 class ExcelSummaryViewTests(APITestCase):
     def setUp(self):
-        self.url = reverse("excel-get-summary")
+        self.url = reverse("excel-summary")
 
     @parameterized.expand(
         [
@@ -35,11 +35,11 @@ class ExcelSummaryViewTests(APITestCase):
             ),
         ]
     )
-    def test_return_correct_response(self, input, expected_data):
+    def test_return_correct_response(self, input_data, expected_data):
         with open(TEST_RESPONSES / "test_correct.xlsx", "rb") as file_obj:
             data = {
                 "file": file_obj,
-                "requested_columns": input,
+                "requested_columns": input_data,
             }
 
             response = self.client.post(self.url, data, format="multipart")
@@ -65,7 +65,7 @@ class ExcelSummaryViewTests(APITestCase):
         self.assertIn("The submitted file is empty.", response.data["file"])
 
     def test_return_missing_fields_response(self):
-        response = self.client.post(reverse("excel-get-summary"))
+        response = self.client.post(self.url, format="multipart")
         self.assertEqual(
             response.json(),
             {
